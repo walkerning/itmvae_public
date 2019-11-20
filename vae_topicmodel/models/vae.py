@@ -271,18 +271,6 @@ class VAE(Model):
                         log_alpha_new_grad = alpha_new_grad / (1 + tf.exp(-self.log_post_gamma1))
                         log_beta_new_grad = beta_new_grad / (1 + tf.exp(-self.log_post_gamma2))
 
-                        # Using the equation of the inverse of 2x2 matrix
-                        # norm = (2 * alpha_didigamma / beta_sq - 1 / beta_sq) + 1e-5
-                        # # For exp
-                        # log_alpha_new_grad = (2 * alpha_old_grad / beta_sq + beta_old_grad / self.post_gamma2) / norm * self.post_gamma1
-                        # log_beta_new_grad = (alpha_old_grad / self.post_gamma2 + alpha_didigamma * beta_old_grad) / norm * self.post_gamma2
-                        # # For softplus
-                        # log_alpha_new_grad = (2 * alpha_old_grad / beta_sq + beta_old_grad / self.post_gamma2) / norm / (1 + tf.exp(-self.log_post_gamma1))
-                        # log_beta_new_grad = (alpha_old_grad / self.post_gamma2 + alpha_didigamma * beta_old_grad) / norm / (1 + tf.exp(-self.log_post_gamma2))
-                        # # 下面这个肯定不对...指数族分布fisher information必须是对natural parameter求二阶
-                        # #log_alpha_new_grad = (alpha_didigamma * self.post_gamma1 + _tmp - tf.log(self.post_gamma2)) * self.post_gamma1 * grads_and_vars[0][0] - self.post_gamma1 * grads_and_vars[1][0]
-                        # #log_beta_new_grad = - self.post_gamma1 * grads_and_vars[0][0]
-
                         new_grads_and_vars = [(log_alpha_new_grad, grads_and_vars[0][1]), (log_beta_new_grad, grads_and_vars[1][1])]
                     else:
                         new_grads_and_vars = grads_and_vars
@@ -661,37 +649,6 @@ class VAE(Model):
     @property
     @call_once
     def log_likelihood_tensor(self):
-        # if self.train_cfg["test_likelihood_method"] == "IS":
-        #     # Importance sampling to estimate margial likelihood
-        #     log_weighted_p = -self.rec_loss + self.log_prior_pdf - self.log_posterior_pdf
-        #     is_inf = tf.is_inf(log_weighted_p)
-        #     # convert inf to nan
-        #     log_weighted_p = (1 - tf.cast(is_inf, tf.floatX)) * log_weighted_p
-
-        #     base = tf.reduce_max(log_weighted_p, axis=0) # base per x: max across all MC samples of one x
-        #     log_weighted_p = log_weighted_p - base
-        #     weighted_p = tf.exp(log_weighted_p)
-        #     is_nan = tf.is_nan(weighted_p)
-        #     num_samples_legal = tf.reduce_sum((1 - tf.cast(is_nan, tf.floatX)), axis=0)
-
-        #     # weighted_p = tf.Print(weighted_p, [log_weighted_p[:, 37], base, num_samples_legal, tf.reduce_max(weighted_p, axis=0), tf.reduce_max(log_weighted_p, axis=0)], summarize=200)
-        #     weighted_p = tf.where(is_nan, tf.zeros(tf.shape(weighted_p), dtype=tf.floatX), weighted_p)
-        #     p_xi = tf.reduce_sum(weighted_p, axis=0) / num_samples_legal
-        #     # weight = tf.where(is_nan, tf.zeros(tf.shape(weighted_p), dtype=tf.floatX), tf.exp(self.log_prior_pdf - self.log_posterior_pdf))
-        #     # p_xi = tf.reduce_sum(weighted_p, axis=0) / tf.reduce_sum(weight, axis=0)
-
-        #     # p_xi = tf.Print(p_xi, [tf.reduce_min(p_xi), tf.reduce_max(p_xi), p_xi], summarize=200, message="print_p_xi")
-
-        #     _log_likelihood = tf.reduce_mean(tf.check_numerics(tf.log(p_xi), "check_log_p_xi") + base)
-
-        #     # Similar results
-        #     # num_data_legal = tf.reduce_sum(1 - tf.cast(tf.is_nan(p_xi), tf.floatX))
-        #     # _log_likelihood = tf.reduce_sum(tf.where(tf.is_nan(p_xi), tf.zeros(tf.shape(p_xi), dtype=tf.floatX), tf.log(p_xi) + base)) / num_data_legal
-
-        # elif self.train_cfg["test_likelihood_method"] == "AIS":
-        #     # Annealed importance sampling to estimate margial likelihood
-        #     pass
-        # return _log_likelihood
         if self.train_cfg["test_likelihood_method"] == "IS":
             # Importance sampling to estimate margial likelihood
             log_weighted_p = -self.rec_loss + self.log_prior_pdf - self.log_posterior_pdf
