@@ -46,3 +46,15 @@ During the running, the random seed of `tf.random`, `np.random`, `random` will b
 
 See the configuration files under `configs` for examples.
 Normally, the configuration file named `model.yaml` configure the model construction, while the file named `train.yaml` configure the training process.
+
+## Cite
+If you find this repo helpful, you can cite our paper.
+```
+@article{ning2020nonparametric,
+  title={Nonparametric Topic Modeling with Neural Inference},
+  author={Ning, Xuefei and Zheng, Yin and Jiang, Zhuxi and Wang, Yu and Yang, Huazhong and Huang, Junzhou and Zhao, Peilin},
+  journal={Neurocomputing},
+  year={2020},
+  publisher={Elsevier}
+}
+```
