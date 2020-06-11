@@ -1,0 +1,28 @@
+model: BoWDirichletProcessVAE
+inference_net_structure: [256, 256]
+gen_net_structure: []
+transfer_fct: tanh
+dirichlet_ab_fct: softplus
+softmax_topic_vector: false
+topic_role: sage
+
+decompose_beta_dim: 1000
+beta_regularizer: 0.00001
+sage_use_bias: false
+
+logvar_bias_init: 0
+logvar_weight_init: xavier
+
+batch_norm_inference_net: true
+batch_norm_gen_net: false
+batch_norm_logits_wdist: true
+batch_renorm: true
+
+prior_alpha: 1.0
+prior_beta: 20.0
+MC_samples: 1
+
+stick_epsilon: 0.05
+num_kl_term: 15
+
+# topic_num: 50/200
