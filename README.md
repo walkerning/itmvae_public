@@ -58,3 +58,5 @@ If you find this repo helpful, you can cite our paper.
   publisher={Elsevier}
 }
 ```
+
+Slides: http://nicsefc.ee.tsinghua.edu.cn/media/publications/2020/NeuroComputing_301_slide.pdf
